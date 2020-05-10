@@ -1,6 +1,8 @@
 package com.wojciechdm.memos.gateway.security
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -14,16 +16,28 @@ import org.springframework.security.config.http.SessionCreationPolicy
 @Order(1)
 internal class SecurityConfig : WebSecurityConfigurerAdapter() {
 
+    @Value("\${gateway.admin.username:}")
+    private lateinit var adminUsername: String
+
+    @Value("\${gateway.admin.password:}")
+    private lateinit var adminPassword: String
+
+    @Value("\${gateway.user.username:}")
+    private lateinit var userUsername: String
+
+    @Value("\${gateway.user.password:}")
+    private lateinit var userPassword: String
+
     @Autowired
     internal fun configureGlobal(auth: AuthenticationManagerBuilder) {
         auth
                 .inMemoryAuthentication()
-                .withUser("user")
-                .password("12345")
+                .withUser(userUsername)
+                .password(userPassword)
                 .roles("USER")
                 .and()
-                .withUser("admin")
-                .password("12345")
+                .withUser(adminUsername)
+                .password(adminPassword)
                 .roles("ADMIN")
     }
 
