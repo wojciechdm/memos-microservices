@@ -1,59 +1,84 @@
 package com.wojciechdm.memos.gateway.security
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
+import org.springframework.security.access.AccessDecisionManager
+import org.springframework.security.access.vote.AuthenticatedVoter
+import org.springframework.security.access.vote.RoleVoter
+import org.springframework.security.access.vote.UnanimousBased
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.security.web.access.expression.WebExpressionVoter
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
+import java.util.*
 
 @Configuration
 @EnableWebSecurity
 @Order(1)
 internal class SecurityConfig : WebSecurityConfigurerAdapter() {
 
-    @Value("\${gateway.admin.username:}")
-    private lateinit var adminUsername: String
-
-    @Value("\${gateway.admin.password:}")
-    private lateinit var adminPassword: String
-
-    @Value("\${gateway.user.username:}")
-    private lateinit var userUsername: String
-
-    @Value("\${gateway.user.password:}")
-    private lateinit var userPassword: String
+    @Autowired
+    internal lateinit var service: UserService
 
     @Autowired
-    internal fun configureGlobal(auth: AuthenticationManagerBuilder) {
-        auth
-                .inMemoryAuthentication()
-                .withUser(userUsername)
-                .password(userPassword)
-                .roles("USER")
-                .and()
-                .withUser(adminUsername)
-                .password(adminPassword)
-                .roles("ADMIN")
+    internal lateinit var unauthorizedHandler: AuthenticationEntryPoint
+
+    @Autowired
+    internal lateinit var successHandler: WebSecurityAuthSuccessHandler
+
+    @Bean
+    internal fun authenticationProvider(): DaoAuthenticationProvider {
+        val authProvider = DaoAuthenticationProvider()
+        authProvider.setUserDetailsService(service)
+        authProvider.setPasswordEncoder(encoder())
+        return authProvider
+    }
+
+    @Bean
+    internal fun encoder(): PasswordEncoder = BCryptPasswordEncoder(11)
+
+    @Bean
+    internal fun accessDecisionManager(): AccessDecisionManager {
+        val decisionVoters = Arrays.asList(
+                WebExpressionVoter(),
+                RoleVoter(),
+                AuthenticatedVoter()
+        )
+        return UnanimousBased(decisionVoters)
+    }
+
+    @Autowired
+    override fun configure(auth: AuthenticationManagerBuilder) {
+        auth.authenticationProvider(authenticationProvider())
     }
 
     override fun configure(http: HttpSecurity) {
         http
+                .csrf().disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(unauthorizedHandler)
+                .and()
                 .authorizeRequests()
-                .antMatchers("/memos/**")
-                .permitAll()
-                .antMatchers("/eureka/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .antMatchers("/notes").authenticated()
+                .antMatchers("/notes/**").authenticated()
+                .antMatchers("/todos").authenticated()
+                .antMatchers("/todos/**").authenticated()
+                .antMatchers("/users").hasAnyAuthority("ADMIN")
+                .antMatchers("/users/**").hasAnyAuthority("ADMIN")
+                .antMatchers("/eureka/**").hasAnyAuthority("ADMIN")
                 .and()
                 .formLogin()
+                .successHandler(successHandler)
+                .failureHandler(SimpleUrlAuthenticationFailureHandler())
                 .and()
-                .logout().permitAll()
-                .logoutSuccessUrl("/memos/**").permitAll()
-                .and()
-                .csrf().disable()
+                .logout()
     }
 }

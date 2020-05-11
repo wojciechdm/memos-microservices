@@ -1,4 +1,4 @@
-package com.wojciechdm.memos.note
+package com.wojciechdm.memos.notes.note
 
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository

@@ -1,4 +1,4 @@
-package com.wojciechdm.memos.todo
+package com.wojciechdm.memos.notes.todo
 
 import java.util.*
 

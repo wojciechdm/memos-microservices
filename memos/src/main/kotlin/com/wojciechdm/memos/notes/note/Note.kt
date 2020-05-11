@@ -1,4 +1,4 @@
-package com.wojciechdm.memos.todo
+package com.wojciechdm.memos.notes.note
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import org.hibernate.annotations.CreationTimestamp
@@ -8,9 +8,10 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "todo")
+@Table(name = "note")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-internal data class Todo(
+@NamedQuery(name = "Note.findByTitle", query = "SELECT note FROM Note note WHERE title LIKE ?1")
+internal data class Note(
         @Id
         @GeneratedValue(generator = "uuid2")
         @GenericGenerator(name = "uuid2", strategy = "uuid2")
@@ -18,12 +19,11 @@ internal data class Todo(
         internal var id: String = "",
         internal var title: String,
         internal var message: String,
-        internal var schedule: Long,
         internal var location: String = "",
         @CreationTimestamp
         internal var created: Date = Date(),
         @UpdateTimestamp
         internal var modified: Date = Date()) {
 
-        internal constructor() : this("", "", "", -1, "")
+        internal constructor() : this("", "", "", "")
 }

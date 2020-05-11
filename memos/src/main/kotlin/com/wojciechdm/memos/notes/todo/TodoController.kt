@@ -1,4 +1,4 @@
-package com.wojciechdm.memos.todo
+package com.wojciechdm.memos.notes.todo
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration

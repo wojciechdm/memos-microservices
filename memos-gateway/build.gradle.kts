@@ -18,11 +18,13 @@ repositories {
 extra["springCloudVersion"] = "Hoxton.SR4"
 
 dependencies {
+	runtimeOnly("mysql:mysql-connector-java")
 	implementation("org.springframework:spring-context")
 	implementation("org.springframework:spring-aop")
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.session:spring-session-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-security")
