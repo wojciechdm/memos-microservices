@@ -1,6 +1,7 @@
 package com.wojciechdm.memos.discovery.security
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -14,12 +15,17 @@ import org.springframework.security.config.http.SessionCreationPolicy
 @Order(1)
 internal class SecurityConfig : WebSecurityConfigurerAdapter() {
 
+    @Value("\${discovery.username:}")
+    private lateinit var username: String
+    @Value("\${discovery.password:}")
+    private lateinit var password: String
+
     @Autowired
     internal fun configureGlobal(auth: AuthenticationManagerBuilder) {
         auth
                 .inMemoryAuthentication()
-                .withUser("discoveryAdmin")
-                .password("{noop}discoveryPassword12345")
+                .withUser(username)
+                .password("{noop}${password}")
                 .roles("SYSTEM")
     }
 
