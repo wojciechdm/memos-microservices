@@ -1,4 +1,4 @@
-package com.wojciechdm.memos
+package com.wojciechdm.memos.notes
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

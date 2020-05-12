@@ -17,7 +17,6 @@ internal class SessionFilter : ZuulFilter() {
         val httpSession = context.request.session
         val session = repository.findById(httpSession.id)
         context.addZuulRequestHeader("Cookie", "SESSION=" + httpSession.id)
-        println("Identyfikator sesji: ${session.id}")
         return null
     }
 

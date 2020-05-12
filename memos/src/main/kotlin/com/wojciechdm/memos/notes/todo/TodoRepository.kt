@@ -1,4 +1,4 @@
-package com.wojciechdm.memos.todo
+package com.wojciechdm.memos.notes.todo
 
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository

@@ -1,4 +1,4 @@
-package com.wojciechdm.memos.security
+package com.wojciechdm.memos.notes.security
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order

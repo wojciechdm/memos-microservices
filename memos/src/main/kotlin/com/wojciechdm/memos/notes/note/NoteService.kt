@@ -1,4 +1,4 @@
-package com.wojciechdm.memos.note
+package com.wojciechdm.memos.notes.note
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
