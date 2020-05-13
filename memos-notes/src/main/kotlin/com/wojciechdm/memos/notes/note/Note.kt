@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.UpdateTimestamp
-import java.util.*
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -16,14 +16,13 @@ internal data class Note(
         @GeneratedValue(generator = "uuid2")
         @GenericGenerator(name = "uuid2", strategy = "uuid2")
         @Column(columnDefinition = "varchar(36)")
-        internal var id: String = "",
-        internal var title: String,
-        internal var message: String,
-        internal var location: String = "",
+        var id: String = "",
+        var title: String,
+        var message: String,
         @CreationTimestamp
-        internal var created: Date = Date(),
+        var created: LocalDateTime = LocalDateTime.now(),
         @UpdateTimestamp
-        internal var modified: Date = Date()) {
+        var modified: LocalDateTime = LocalDateTime.now()) {
 
-        internal constructor() : this("", "", "", "")
+        constructor() : this("", "", "")
 }

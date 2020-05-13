@@ -1,5 +1,6 @@
 package com.wojciechdm.memos.gateway.security
 
+import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -11,7 +12,10 @@ import java.time.LocalDateTime
 internal class UserService : UserDetailsService {
 
     @Autowired
-    internal lateinit var repository: UserRepository
+    private lateinit var repository: UserRepository
+
+    @Autowired
+    private lateinit var mapper: ModelMapper
 
     private val encoder = BCryptPasswordEncoder(11)
 
@@ -23,18 +27,7 @@ internal class UserService : UserDetailsService {
         admin.name = user.name
         admin.pwd = encoder.encode(user.pwd)
         admin.roles = "ADMIN, MEMBER"
-        return with(repository.save(admin)) {
-            UserDetailsDTO(
-                    id,
-                    name,
-                    roles,
-                    enabled,
-                    accountNonExpired,
-                    accountNonLocked,
-                    credentialsNonExpired,
-                    created,
-                    modified)
-        }
+        return mapper.map(repository.save(admin), UserDetailsDTO::class.java)
     }
 
     internal fun saveMember(user: UserDTO): UserDetailsDTO {
@@ -42,57 +35,23 @@ internal class UserService : UserDetailsService {
         member.name = user.name
         member.pwd = encoder.encode(user.pwd)
         member.roles = "MEMBER"
-        return with(repository.save(member)) {
-            UserDetailsDTO(
-                    id,
-                    name,
-                    roles,
-                    enabled,
-                    accountNonExpired,
-                    accountNonLocked,
-                    credentialsNonExpired,
-                    created,
-                    modified)
-        }
+        return mapper.map(repository.save(member), UserDetailsDTO::class.java)
     }
 
-    internal fun updateUser(user: User): UserDetailsDTO? {
+    internal fun updateUser(user: UserDTO): UserDetailsDTO? {
         val toUpdate = repository.findOneByName(user.name)
         toUpdate?.let {
             if (user.pwd.isNotEmpty()) {
                 toUpdate.pwd = encoder.encode(user.pwd)
             }
-            toUpdate.accountNonExpired = user.accountNonExpired
-            toUpdate.accountNonLocked = user.accountNonLocked
-            toUpdate.credentialsNonExpired = user.credentialsNonExpired
             toUpdate.modified = LocalDateTime.now()
-            return with(repository.save(toUpdate)) {
-                UserDetailsDTO(
-                        id,
-                        name,
-                        roles,
-                        enabled,
-                        accountNonExpired,
-                        accountNonLocked,
-                        credentialsNonExpired,
-                        created,
-                        modified)
-            }
+            return mapper.map(repository.save(toUpdate), UserDetailsDTO::class.java)
         }
         return null
     }
 
-    internal fun getUsers(): Collection<UserDetailsDTO> = repository.findAll().map {
-        UserDetailsDTO(
-                it.id,
-                it.name,
-                it.roles,
-                it.enabled,
-                it.accountNonExpired,
-                it.accountNonLocked,
-                it.credentialsNonExpired,
-                it.created,
-                it.modified)
+    internal fun getUsers(): List<UserDetailsDTO> = repository.findAll().map {
+        mapper.map(it, UserDetailsDTO::class.java)
     }
 
     internal fun deleteUser(id: String): Unit = repository.deleteById(id)

@@ -13,7 +13,7 @@ internal class TodoController {
     private lateinit var service: TodoService
 
     @GetMapping
-    internal fun getTodos(): Iterable<TodoDTO> = service.getTodos()
+    internal fun getTodos(): List<TodoDTO> = service.getTodos()
 
     @PutMapping
     internal fun insertTodo(@RequestBody todo: TodoDTO): TodoDTO = service.insertTodo(todo)
@@ -25,6 +25,6 @@ internal class TodoController {
     internal fun updateTodo(@RequestBody todo: TodoDTO): TodoDTO = service.updateTodo(todo)
 
     @PostMapping("/later_than")
-    internal fun getTodoLaterThan(@RequestBody payload: TodoLaterThanRequest): Iterable<TodoDTO> =
+    internal fun getTodoLaterThan(@RequestBody payload: TodoLaterThanRequest): List<TodoDTO> =
             service.getScheduledLaterThan(payload.date)
 }

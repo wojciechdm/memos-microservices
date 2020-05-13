@@ -1,7 +1,7 @@
 package com.wojciechdm.memos.todos.todo
 
-import java.util.*
+import java.time.LocalDate
 
-internal data class TodoLaterThanRequest(internal val date: Date? = null) {
+internal data class TodoLaterThanRequest(internal val date: LocalDate? = null) {
     internal constructor() : this(null)
 }

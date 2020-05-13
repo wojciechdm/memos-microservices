@@ -13,7 +13,7 @@ internal class NoteController {
     private lateinit var service: NoteService
 
     @GetMapping
-    internal fun getNotes(): Iterable<NoteDTO> = service.getNotes()
+    internal fun getNotes(): List<NoteDTO> = service.getNotes()
 
     @PutMapping
     internal fun insertNote(@RequestBody note: NoteDTO): NoteDTO = service.insertNote(note)
@@ -25,6 +25,6 @@ internal class NoteController {
     internal fun updateNote(@RequestBody note: NoteDTO): NoteDTO = service.updateNote(note)
 
     @PostMapping("/by_title")
-    internal fun getNotesByTitle(@RequestBody payload: NoteFindByTitleRequest): Iterable<NoteDTO> =
+    internal fun getNotesByTitle(@RequestBody payload: NoteFindByTitleRequest): List<NoteDTO> =
             service.findByTitle(payload.title)
 }

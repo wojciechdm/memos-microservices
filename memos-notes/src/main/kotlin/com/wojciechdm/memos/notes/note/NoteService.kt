@@ -1,5 +1,6 @@
 package com.wojciechdm.memos.notes.note
 
+import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -8,15 +9,16 @@ internal class NoteService {
     @Autowired
     private lateinit var repository: NoteRepository
 
-    internal fun getNotes(): Iterable<NoteDTO> = repository.findAll().map(::NoteDTO)
+    @Autowired
+    private lateinit var mapper: ModelMapper
+
+    internal fun getNotes(): List<NoteDTO> = repository.findAll().map {
+        mapper.map(it, NoteDTO::class.java)
+    }
 
     internal fun insertNote(noteDTO: NoteDTO): NoteDTO =
-            NoteDTO(
-                    repository.save(
-                            Note(
-                                    title = noteDTO.title,
-                                    message = noteDTO.message,
-                                    location = noteDTO.location)))
+            mapper.map(repository.save(
+                    mapper.map(noteDTO, Note::class.java)), NoteDTO::class.java)
 
     internal fun deleteNote(id: String): Unit = repository.deleteById(id)
 
@@ -24,10 +26,13 @@ internal class NoteService {
         var note = repository.findById(noteDTO.id).get()
         note.title = noteDTO.title
         note.message = noteDTO.message
-        note.location = noteDTO.location
         note.modified = noteDTO.modified
         note = repository.save(note)
-        return NoteDTO(note)
+        return mapper.map(note, NoteDTO::class.java)
     }
-    internal fun findByTitle(title: String): Iterable<NoteDTO> = repository.findByTitle(title).map(::NoteDTO)
+
+    internal fun findByTitle(title: String): List<NoteDTO> =
+            repository.findByTitle(title).map {
+                mapper.map(it, NoteDTO::class.java)
+            }
 }
