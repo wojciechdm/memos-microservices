@@ -5,12 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-internal class NoteService {
-    @Autowired
-    private lateinit var repository: NoteRepository
-
-    @Autowired
-    private lateinit var mapper: ModelMapper
+internal class NoteService(
+        private val repository: NoteRepository,
+        private val mapper: ModelMapper
+) {
 
     internal fun getNotes(): List<NoteDTO> = repository.findAll().map {
         mapper.map(it, NoteDTO::class.java)

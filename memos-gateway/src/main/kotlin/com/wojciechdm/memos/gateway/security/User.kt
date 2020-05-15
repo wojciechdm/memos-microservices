@@ -21,25 +21,25 @@ internal open class User(
         @GeneratedValue(generator = "uuid2")
         @GenericGenerator(name = "uuid2", strategy = "uuid2")
         @Column(unique = true, nullable = false)
-        internal var id: String = "",
+        open var id: String = "",
         @Column(unique = true, nullable = false)
         @NotNull
-        internal var name: String = "",
+        open var name: String = "",
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         @NotBlank
-        internal var pwd: String = "",
-        internal var roles: String = "",
-        internal var enabled: Boolean = true,
-        internal var accountNonExpired: Boolean = true,
-        internal var accountNonLocked: Boolean = true,
-        internal var credentialsNonExpired: Boolean = true,
+        open var pwd: String = "",
+        open var roles: String = "",
+        open var enabled: Boolean = true,
+        open var accountNonExpired: Boolean = true,
+        open var accountNonLocked: Boolean = true,
+        open var credentialsNonExpired: Boolean = true,
         @CreationTimestamp
-        internal var created: LocalDateTime = LocalDateTime.now(),
+        open var created: LocalDateTime = LocalDateTime.now(),
         @UpdateTimestamp
-        internal var modified: LocalDateTime = LocalDateTime.now()
+        open var modified: LocalDateTime = LocalDateTime.now()
 ) : UserDetails {
 
-    internal constructor() : this("")
+    constructor() : this("")
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val authorities = mutableListOf<GrantedAuthority>()

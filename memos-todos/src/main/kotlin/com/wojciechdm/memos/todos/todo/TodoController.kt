@@ -1,16 +1,12 @@
 package com.wojciechdm.memos.todos.todo
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/todos")
 @EnableAutoConfiguration
-internal class TodoController {
-
-    @Autowired
-    private lateinit var service: TodoService
+internal class TodoController(private val service: TodoService) {
 
     @GetMapping
     internal fun getTodos(): List<TodoDTO> = service.getTodos()

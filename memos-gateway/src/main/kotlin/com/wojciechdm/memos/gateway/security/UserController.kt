@@ -1,14 +1,10 @@
 package com.wojciechdm.memos.gateway.security
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/users")
-internal class UserController {
-
-    @Autowired
-    private lateinit var service: UserService
+internal class UserController(private val service: UserService) {
 
     @GetMapping
     internal fun getUsers(): List<UserDetailsDTO> = service.getUsers()

@@ -2,15 +2,13 @@ package com.wojciechdm.memos.gateway
 
 import com.netflix.zuul.ZuulFilter
 import com.netflix.zuul.context.RequestContext
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.session.SessionRepository
 import org.springframework.stereotype.Component
 
 @Component
-internal class SessionFilter : ZuulFilter() {
-
-    @Autowired
-    private lateinit var repository: SessionRepository<*>
+internal class SessionFilter(
+        private val repository: SessionRepository<*>
+) : ZuulFilter() {
 
     override fun run(): Any? {
         val context = RequestContext.getCurrentContext()

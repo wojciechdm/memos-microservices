@@ -6,12 +6,10 @@ import org.springframework.stereotype.Service
 import java.time.LocalDate
 
 @Service
-internal class TodoService {
-    @Autowired
-    private lateinit var repository: TodoRepository
-
-    @Autowired
-    private lateinit var mapper: ModelMapper
+internal class TodoService(
+        private val repository: TodoRepository,
+        private val mapper: ModelMapper
+) {
 
     internal fun getTodos(): List<TodoDTO> =
             repository.findAll().map { mapper.map(it, TodoDTO::class.java) }

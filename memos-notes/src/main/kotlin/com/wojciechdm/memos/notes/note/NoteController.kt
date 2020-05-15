@@ -1,16 +1,12 @@
 package com.wojciechdm.memos.notes.note
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/notes")
 @EnableAutoConfiguration
-internal class NoteController {
-
-    @Autowired
-    private lateinit var service: NoteService
+internal class NoteController(private val service: NoteService) {
 
     @GetMapping
     internal fun getNotes(): List<NoteDTO> = service.getNotes()
