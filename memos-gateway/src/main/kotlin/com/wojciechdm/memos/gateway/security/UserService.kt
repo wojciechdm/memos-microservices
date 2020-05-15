@@ -1,26 +1,20 @@
 package com.wojciechdm.memos.gateway.security
 
 import org.modelmapper.ModelMapper
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.lang.RuntimeException
 import java.time.LocalDateTime
 
 @Service
-internal class UserService : UserDetailsService {
-
-    @Autowired
-    private lateinit var repository: UserRepository
-
-    @Autowired
-    private lateinit var mapper: ModelMapper
-
-    private val encoder = BCryptPasswordEncoder(11)
+internal class UserService(
+        private val repository: UserRepository,
+        private val mapper: ModelMapper,
+        private val encoder: PasswordEncoder
+) : UserDetailsService {
 
     override fun loadUserByUsername(username: String): User? =
-            repository.findOneByName(username) ?: throw RuntimeException("$username doesn't exists")
+            repository.findOneByName(username) ?: throw UserNotFound("$username doesn't exists")
 
     internal fun saveAdmin(user: UserDTO): UserDetailsDTO {
         val admin = Admin()

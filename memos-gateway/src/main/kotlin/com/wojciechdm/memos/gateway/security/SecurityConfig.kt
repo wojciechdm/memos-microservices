@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.access.expression.WebExpressionVoter
@@ -23,27 +22,20 @@ import java.util.*
 @Configuration
 @EnableWebSecurity
 @Order(1)
-internal class SecurityConfig : WebSecurityConfigurerAdapter() {
-
-    @Autowired
-    internal lateinit var service: UserService
-
-    @Autowired
-    internal lateinit var unauthorizedHandler: AuthenticationEntryPoint
-
-    @Autowired
-    internal lateinit var successHandler: WebSecurityAuthSuccessHandler
+internal class SecurityConfig(
+        private val service: UserService,
+        private val unauthorizedHandler: AuthenticationEntryPoint,
+        private val successHandler: WebSecurityAuthSuccessHandler,
+        private val encoder: PasswordEncoder
+) : WebSecurityConfigurerAdapter() {
 
     @Bean
     internal fun authenticationProvider(): DaoAuthenticationProvider {
         val authProvider = DaoAuthenticationProvider()
         authProvider.setUserDetailsService(service)
-        authProvider.setPasswordEncoder(encoder())
+        authProvider.setPasswordEncoder(encoder)
         return authProvider
     }
-
-    @Bean
-    internal fun encoder(): PasswordEncoder = BCryptPasswordEncoder(11)
 
     @Bean
     internal fun accessDecisionManager(): AccessDecisionManager {
