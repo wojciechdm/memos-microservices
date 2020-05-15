@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.*
 internal class UserController {
 
     @Autowired
-    internal lateinit var service: UserService
+    private lateinit var service: UserService
 
     @GetMapping
-    internal fun getUsers(): Collection<UserDetailsDTO> = service.getUsers()
+    internal fun getUsers(): List<UserDetailsDTO> = service.getUsers()
 
     @PutMapping("/admin")
     internal fun insertAdmin(@RequestBody user: UserDTO): UserDetailsDTO = service.saveAdmin(user)
@@ -23,5 +23,5 @@ internal class UserController {
     internal fun deleteUser(@PathVariable(name = "id") id: String): Unit = service.deleteUser(id)
 
     @PostMapping
-    internal fun updateUser(@RequestBody user: User): UserDetailsDTO? = service.updateUser(user)
+    internal fun updateUser(@RequestBody user: UserDTO): UserDetailsDTO? = service.updateUser(user)
 }

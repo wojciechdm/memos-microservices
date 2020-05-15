@@ -1,25 +1,15 @@
 package com.wojciechdm.memos.todos.todo
 
-import java.util.*
+import java.time.LocalDate
+import java.time.LocalDateTime
 
-data class TodoDTO(
+internal data class TodoDTO(
         var id: String = "",
         var title: String,
         var message: String,
-        var schedule: Long,
-        var location: String = "",
-        var created: Date = Date(),
-        var modified: Date = Date()) {
+        var deadline: LocalDate?,
+        var created: LocalDateTime = LocalDateTime.now(),
+        var modified: LocalDateTime = LocalDateTime.now()) {
 
-    constructor() : this(title = "", message = "", schedule = -1, location = "")
-
-    internal constructor(todo: Todo) :
-            this(
-                    todo.id,
-                    todo.title,
-                    todo.message,
-                    todo.schedule,
-                    todo.location,
-                    todo.created,
-                    todo.modified)
+    constructor() : this("", "", "", null)
 }

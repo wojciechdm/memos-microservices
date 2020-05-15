@@ -1,24 +1,24 @@
 package com.wojciechdm.memos.todos.todo
 
+import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
+import java.time.LocalDate
 
 @Service
 internal class TodoService {
     @Autowired
     private lateinit var repository: TodoRepository
 
-    internal fun getTodos(): Iterable<TodoDTO> = repository.findAll().map(::TodoDTO)
+    @Autowired
+    private lateinit var mapper: ModelMapper
+
+    internal fun getTodos(): List<TodoDTO> =
+            repository.findAll().map { mapper.map(it, TodoDTO::class.java) }
 
     internal fun insertTodo(todoDTO: TodoDTO): TodoDTO =
-            TodoDTO(
-                    repository.save(
-                            Todo(
-                                    title = todoDTO.title,
-                                    message = todoDTO.message,
-                                    schedule = todoDTO.schedule,
-                                    location = todoDTO.location)))
+            mapper.map(repository.save(
+                    mapper.map(todoDTO, Todo::class.java)), TodoDTO::class.java)
 
     internal fun deleteTodo(id: String): Unit = repository.deleteById(id)
 
@@ -26,15 +26,17 @@ internal class TodoService {
         var todo = repository.findById(todoDTO.id).get()
         todo.title = todoDTO.title
         todo.message = todoDTO.message
-        todo.location = todoDTO.location
+        todo.deadline = todoDTO.deadline
         todo.modified = todoDTO.modified
         todo = repository.save(todo)
-        return TodoDTO(todo)
+        return mapper.map(todo, TodoDTO::class.java)
     }
 
-    internal fun getScheduledLaterThan(date: Date?): Iterable<TodoDTO> {
+    internal fun getScheduledLaterThan(date: LocalDate?): List<TodoDTO> {
         date?.let {
-            return repository.findScheduledLaterThan(date.time).map(::TodoDTO)
+            return repository.findScheduledLaterThan(date).map {
+                mapper.map(it, TodoDTO::class.java)
+            }
         }
         return listOf()
     }

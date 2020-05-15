@@ -1,23 +1,13 @@
 package com.wojciechdm.memos.notes.note
 
-import java.util.*
+import java.time.LocalDateTime
 
-data class NoteDTO(
+internal data class NoteDTO(
         var id: String = "",
         var title: String,
         var message: String,
-        var location: String = "",
-        var created: Date = Date(),
-        var modified: Date = Date()) {
+        var created: LocalDateTime = LocalDateTime.now(),
+        var modified: LocalDateTime = LocalDateTime.now()) {
 
-    constructor() : this(title = "", message = "", location = "")
-
-    internal constructor(note: Note) :
-            this(
-                    note.id,
-                    note.title,
-                    note.message,
-                    note.location,
-                    note.created,
-                    note.modified)
+    constructor() : this(title = "", message = "")
 }

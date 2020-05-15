@@ -16,6 +16,7 @@ repositories {
 }
 
 extra["springCloudVersion"] = "Hoxton.SR4"
+extra["modelMapperVersion"] = "2.3.7"
 
 dependencies {
 	runtimeOnly("mysql:mysql-connector-java")
@@ -33,6 +34,7 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 	implementation("org.springframework:spring-web")
 	implementation("org.springframework:spring-webmvc")
+	implementation("org.modelmapper:modelmapper:${property("modelMapperVersion")}")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
