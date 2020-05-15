@@ -6,7 +6,7 @@ Used technologies: Kotlin 1.3, Gradle, MySQL, Spring Boot, Spring Cloud.
 
 ### Installing
 
-1. Before build applications need to set envoirenment variables listed below:
+1. Before build applications need to set environment variables listed below:
 
    ```
    MEMOS_CONFIG_REPO_URI
